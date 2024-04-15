@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="/static/style.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <title>Chat Interface</title>
+  </head>
+  <body>
+    <div class="chat-container">
+      <div class="chat-header">
+        <h1>Chat Interface</h1>
+      </div>
+      <div id="chatbox"></div>
+      <div class="chat-input" id="userInput">
+        <input id="textInput" type="text" placeholder="Tapez votre message ici..." />
+        <button id="buttonInput">Envoyer</button>
+      </div>
+    </div>
+    <script>
+      function getBotResponse() {
+        var rawText = $("#textInput").val();
+        var userHtml = '<p class="userText"><span>' + rawText + "</span></p>";
+        $("#textInput").val("");
+        $("#chatbox").append(userHtml);
+        scrollToBottom();
+        $.get("/get", { msg: rawText }).done(function (data) {
+          var botHtml = '<p class="botText"><span>' + data + "</span></p>";
+          $("#chatbox").append(botHtml);
+          scrollToBottom();
+        });
+      }
+
+      function scrollToBottom() {
+        var chatbox = document.getElementById("chatbox");
+        chatbox.scrollTop = chatbox.scrollHeight;
+      }
+
+      $("#textInput").keypress(function (e) {
+        if (e.which == 13) {
+          getBotResponse();
+        }
+      });
+
+      $("#buttonInput").click(function () {
+        getBotResponse();
+      });
+    </script>
+  </body>
+</html>
